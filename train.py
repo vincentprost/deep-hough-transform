@@ -109,7 +109,11 @@ def main():
     start_time = time.time()
 
     if CONFIGS["TRAIN"]["RESUME"] is not None:
-        raise(NotImplementedError)
+        checkpoint = torch.load(CONFIGS["TRAIN"]["RESUME"], map_location=torch.device('cpu'))
+        if 'state_dict' in checkpoint.keys():
+            model.load_state_dict(checkpoint['state_dict'])
+        else:
+            model.load_state_dict(checkpoint)
     
     if CONFIGS["TRAIN"]["TEST"]:
         validate(val_loader, model, 0, writer, args)
